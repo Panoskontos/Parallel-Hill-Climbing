@@ -3,8 +3,8 @@
 #include <time.h>
 #include <mpi.h>
 
-#define ROWS 10
-#define COLS 10
+#define ROWS 10000
+#define COLS 10000
 
 int array[ROWS][COLS];
 int visited[ROWS][COLS] = {0}; // Mark the visited cell
@@ -17,6 +17,8 @@ int rand_range(int min, int max) {
 
 
 int main(int argc, char *argv[]) {
+    clock_t start_time= clock(); // for benchmarking
+
     int rank, num_procs, global_max,global_x,global_y;
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -35,12 +37,12 @@ int main(int argc, char *argv[]) {
         }
 
         // print array
-        for (i = 0; i < ROWS; i++) {
-                    for (j = 0; j < COLS; j++) {
-                        printf("%d " , array[i][j]);
-                }
-                    printf("\n");
-                }
+        // for (i = 0; i < ROWS; i++) {
+        //             for (j = 0; j < COLS; j++) {
+        //                 printf("%d " , array[i][j]);
+        //         }
+        //             printf("\n");
+        //         }
 
     }
     //Broadcast the array to all other processes
@@ -50,7 +52,7 @@ int main(int argc, char *argv[]) {
     int portion = ROWS / num_procs;
     int start = rank * portion;
     int end = start + portion;
-printf("\nrank %d starts from row %d and end to row %d",rank,start,end);
+// printf("\nrank %d starts from row %d and end to row %d",rank,start,end);
 
 
 // Random number inside the portion we declared
@@ -82,7 +84,7 @@ if(col == previous_col&&col<restart_end){
 previous_col = col;
 
 
-printf("\nrank %d loop %d random spot is [%d %d]",rank,j,row,col);
+// printf("\nrank %d loop %d random spot is [%d %d]",rank,j,row,col);
 int steps = 0;  // Use steps for load balancing 
 int local_max=-1;
 int local_x = 0;
@@ -111,7 +113,7 @@ while (1) {
 
         // if no neighboring cell has a higher value, we've reached the peak
         if (nextRow == row && nextCol == col) {
-            printf("\nReached peak at [%d, %d] with value %d\n", row, col, currentValue);
+            // printf("\nReached peak at [%d, %d] with value %d\n", row, col, currentValue);
             local_max = currentValue;
             if(local_max>local_max_from_restarts){
                 local_max_from_restarts=local_max;
@@ -122,7 +124,7 @@ while (1) {
         }
 
         if(steps>=5){
-             printf("\nNo more steps for rank %d stopped at [%d, %d] with value %d\n",rank, row, col, currentValue);
+            //  printf("\nNo more steps for rank %d stopped at [%d, %d] with value %d\n",rank, row, col, currentValue);
             local_max = currentValue;
              if(local_max>local_max_from_restarts){
                 local_max_from_restarts=local_max;
@@ -163,5 +165,9 @@ if (rank == 0) {
 
 
     MPI_Finalize();
+    clock_t end_time = clock(); //benchmarking
+    double time_spent = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+    printf("Execution time: %f seconds\n", time_spent);
+
     return 0;
 }
