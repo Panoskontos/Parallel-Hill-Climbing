@@ -16,7 +16,6 @@ int rand_range(int min, int max) {
 }
 
 
-
 int main(int argc, char *argv[]) {
     int rank, num_procs, global_max,global_x,global_y;
     MPI_Init(&argc, &argv);
@@ -63,10 +62,26 @@ printf("\nrank %d starts from row %d and end to row %d",rank,start,end);
 int restarts =  4;
 int local_max_from_restarts = -1;
 j = 0;
+
+int previous_col = -1;
+
 while(j<restarts){
     //   Find the max local
 int row = rand_range(start,end);
-int col = rand_range(0,COLS);
+
+// make restart from different column
+// so you cover the most effective distance
+int restart_start = (COLS/restarts)*j;
+int restart_end = (COLS/restarts)+restart_start;
+int col = rand_range(restart_start,restart_end);
+
+// make sure it's not the previous column
+if(col == previous_col&&col<restart_end){
+    col++;
+}
+previous_col = col;
+
+
 printf("\nrank %d loop %d random spot is [%d %d]",rank,j,row,col);
 int steps = 0;  // Use steps for load balancing 
 int local_max=-1;
@@ -77,7 +92,7 @@ while (1) {
         int currentValue = array[row][col];
         visited[row][col] = 1;
         int nextRow = row, nextCol = col;
-        printf("\nChecking for at [%d, %d] with value %d\n", row, col, currentValue);
+        // printf("\nChecking for at [%d, %d] with value %d\n", row, col, currentValue);
         // check the value of the neighboring cells
         // check for visited
         // check for boundaries of others
