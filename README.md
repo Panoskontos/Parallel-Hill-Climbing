@@ -19,6 +19,7 @@ Now, if we want to speed things up and have multiple people working on this task
 
 
 
+![image I2GT61](https://github.com/Panoskontos/Parallel-Hill-Climbing/assets/65974766/90cae5ea-8422-4be7-8d70-a29ed5bb8969)
 
 
 
