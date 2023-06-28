@@ -2,9 +2,9 @@
 
 The task involves implementing a parallel algorithm using the MPI programming model to find the maximum value of a function with two variables. Here are the key points:
 
-What is the most efficient way to find the tallest point?
+- What is the most efficient way to find the tallest point?
 
-we divide the area into a grid, like a big square with smaller squares inside. Each square represents a combination of two numbers that we can input into the function.
+There are many answers to that my approach was to divide the area into a grid, like a big square with smaller squares inside. Each square represents a combination of two numbers that we can input into the function.
 
 Now, instead of checking every single combination of numbers in the grid, which would take a long time, we use a clever strategy. We start at a random square in the grid and check its value using the function. Then, we look at the four neighboring squares and go to the one with the highest value. We keep doing this, moving to squares with higher values, until we can't find any neighboring square with a higher value.
 
